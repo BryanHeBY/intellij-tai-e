@@ -68,14 +68,14 @@ class Metadata{
 class Node{
     name: string;
     isGroup: boolean;
-    group: string;
+    groupType: string;
     nodeType: string;
     color: string;
 
     constructor(node: any){
         this.name = node.name;
         this.isGroup = node.isGroup;
-        this.group = node.group;
+        this.groupType = node.groupType;
         this.nodeType = node.nodeType;
         this.color = node.color;
     }

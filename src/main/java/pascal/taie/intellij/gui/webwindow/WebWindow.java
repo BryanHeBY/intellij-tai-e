@@ -215,7 +215,7 @@ public class WebWindow {
             public boolean onQuery(CefBrowser browser, CefFrame frame, long queryId,
                                    String request, boolean persistent, CefQueryCallback callback) {
                 if (callback != null) {
-                    callback.success(service.getQueryContent());
+                    callback.success(service.getJavaQueryResult(request));
                 }
                 return true; // 表示已处理请求
             }

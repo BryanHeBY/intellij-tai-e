@@ -1,6 +1,7 @@
 import go, { Group, Model } from 'gojs';
 import { Graph } from './graph' ;
 import { Alias } from 'yaml';
+import { group } from 'console';
 
 const $ = go.GraphObject.make;
 
@@ -35,19 +36,7 @@ export function visualize(graph: Graph){
                 new go.Binding("text", "key")
             ),
             /*
-            {
-                selectionAdornmentTemplate:
-                  $(go.Adornment, "Spot",
-                    $(go.Panel, "Auto",
-                        $(go.Shape, { fill: null, stroke: "black", strokeWidth: 4 }),
-                        $(go.Placeholder),
-                    ),
-                    $("Button",
-                        $(go.TextBlock, "trace"),
-                        { alignment: go.Spot.Bottom, alignmentFocus: go.Spot.Center, desiredSize: new go.Size(70,25), click: highlightPath },
-                    )
-                  ),
-            },
+            
             */
             $("Button",  // a replacement for "TreeExpanderButton" that works for non-tree-structured graphs
                 // assume initially not visible because there are no links coming out
@@ -117,6 +106,19 @@ export function visualize(graph: Graph){
                 $(go.Placeholder,
                 { padding: new go.Margin(0, 10) }),
             ),
+            {
+                selectionAdornmentTemplate:
+                  $(go.Adornment, "Spot",
+                    $(go.Panel, "Auto",
+                        $(go.Shape, { fill: null, stroke: "black", strokeWidth: 4 }),
+                        $(go.Placeholder),
+                    ),
+                    $("Button",
+                        $(go.TextBlock, "go-to-def"),
+                        { alignment: go.Spot.Top, alignmentFocus: go.Spot.Center, desiredSize: new go.Size(80,25), click: goToDef },
+                    )
+                  ),
+            },
         );
     myDiagram.nodes.each(function(n) {
         // myDiagram.startTransaction();
@@ -380,6 +382,25 @@ function mark(node: go.Node, depth: number){
     node.findNodesOutOf().each(n => mark(n, depth - 1));
 }
 
+function goToDef(event: go.InputEvent, ador: go.GraphObject){
+    const node = ((ador.part as go.Adornment).adornedPart) as go.Node;
+    const groupType = node.data.groupType;
+    const key = node.key;
+    window.javaQuery({
+        request: JSON.stringify({
+            type: 'goToDef',
+            data: JSON.stringify({
+                groupType: groupType,
+                signature: key
+            })
+        }),
+        persistent: false,
+        onSuccess: function(response: string) {
+            console.log(response);
+        },
+        onFailure: function(error_code: number, error_message: string) { }
+    })
+}
 
 
 function makeNodes(graph: Graph){
@@ -391,9 +412,9 @@ function makeNodes(graph: Graph){
         const group = parent ? parent.name : null;
         const color = node.color ? node.color : 'lightblue';
         if (group != null) {
-            nodeDataArray.push({key: node.name, isGroup: node.isGroup, color: color, group: group, isHighlighted: false, isCollapsed: true});
+            nodeDataArray.push({key: node.name, isGroup: node.isGroup, groupType: node.groupType, color: color, group: group, isHighlighted: false, isCollapsed: true});
         } else {
-            nodeDataArray.push({key: node.name, isGroup: node.isGroup, color: color, isHighlighted: false, isCollapsed: true});
+            nodeDataArray.push({key: node.name, isGroup: node.isGroup, groupType: node.groupType, color: color, isHighlighted: false, isCollapsed: true});
         }
     });
 
@@ -416,6 +437,7 @@ interface INode{
     color?: string;
     isGroup?: boolean;
     group?: string;
+    groupType?: string;
     isHighlighted: boolean;
     isCollapsed: boolean;
 }

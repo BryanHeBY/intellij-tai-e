@@ -10,7 +10,10 @@ if (process.env.NODE_ENV === 'development') {
 } else {
     window.onload = function() {
         window.javaQuery({
-            request: 'hello',
+            request: JSON.stringify({
+                type: 'getFlowGraph',
+                data: ''
+            }),
             persistent: false,
             onSuccess: function(response: string) {
                 build(response, visualize);

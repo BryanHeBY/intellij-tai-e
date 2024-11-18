@@ -96,6 +96,7 @@
         <toolWindow id="Tai-e Result" anchor="right" icon="/META-INF/toolBarIcon.svg"
                     factoryClass="pascal.taie.intellij.gui.webwindow.WebWindowFactoryImpl"/>
         <projectService id="WebWindowService" serviceImplementation="pascal.taie.intellij.gui.webwindow.WebWindowService"/>
+        <projectService id="TaieGotoDefService" serviceImplementation="pascal.taie.intellij.services.TaieGoToDefService"/>
         <toolWindow anchor="bottom" id="Tai-e" icon="/META-INF/toolBarIcon.svg"
                     factoryClass="pascal.taie.intellij.gui.toolwindow.ToolWindowFactoryImpl"/>
         <projectConfigurable id="pascal.taie.intellij.gui.modal.view.TaieCustomizedConfigurable"
